@@ -1,0 +1,12 @@
+argparse
+os
+sys
+json
+re
+logging
+requests
+python-dotenv
+google-api-python-client
+mutagen
+supabase
+spotipy
