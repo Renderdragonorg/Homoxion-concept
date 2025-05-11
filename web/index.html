@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Homoxion Engine: Open-source copyright lookup for YouTube, Spotify, file metadata & AI classification" />
+  <meta property="og:title" content="Homoxion Engine" />
+  <meta property="og:description" content="Find copyright & license info for YouTube videos, Spotify tracks, and audio files. Open Source & Integrate Anywhere." />
+  <meta property="og:url" content="https://renderdragon.org" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@_renderdragon" />
+  <link rel="icon" href="/favicon.ico" />
+  <title>Homonxion Engine</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --secondary: #7c3aed;
+      --accent: #10b981;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --dark-bg: #0f172a;
+      --dark-text: #f8fafc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: var(--transition);
+    }
+
+    body.dark {
+      --bg: var(--dark-bg);
+      --text: var(--dark-text);
+    }
+
+    h1, h2, h3 {
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    h1 { font-size: 3.5rem; }
+    h2 { font-size: 2.5rem; margin-bottom: 2rem; position: relative; }
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -0.5rem;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 6rem 2rem 8rem;
+      clip-path: ellipse(100% 60% at 50% 40%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero img {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+      border-radius: var(--radius);
+      margin: 3rem auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transform: translateY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .hero img:hover {
+      transform: translateY(-5px);
+    }
+
+    .gradient-text {
+      background: linear-gradient(45deg, #fff, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: var(--radius);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .dark-mode {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg);
+      color: var(--text);
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .dark-mode:hover {
+      transform: rotate(180deg) scale(1.1);
+    }
+
+    pre {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      position: relative;
+      margin: 1.5rem 0;
+    }
+
+    pre::before {
+      content: 'Terminal';
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.25rem 0.5rem;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 0 var(--radius) 0 var(--radius);
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+
+    form {
+      max-width: 500px;
+      margin: 2rem auto;
+      position: relative;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    input[type="email"]:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      counter-reset: step;
+    }
+
+    .step-item {
+      padding-left: 4rem;
+      position: relative;
+      counter-increment: step;
+    }
+
+    .step-item::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3rem;
+      height: 3rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      margin-top: 4rem;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .blob {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.1;
+      animation: float 12s infinite;
+      z-index: 0;
+    }
+
+    .blob:nth-child(1) { top: -200px; left: -200px; }
+    .blob:nth-child(2) { top: 200px; right: -300px; animation-delay: -4s; }
+
+    [data-animate] {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    [data-animate].visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+      header { padding: 4rem 1rem 6rem; }
+      section { padding: 4rem 1rem; }
+      .step-item { padding-left: 3rem; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <button class="dark-mode" aria-label="Toggle dark mode">
+    <i class="fas fa-moon"></i>
+  </button>
+  
+  <header>
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="hero">
+      <h1 class="gradient-text" data-animate>Homoxion Engine</h1>
+      <div class="badge" data-animate>
+        <i class="fas fa-code-branch"></i>
+        Open Source & Integrate Anywhere
+      </div>
+      <p data-animate>Copyright & license lookup for YouTube, Spotify, files & more</p>
+      <nav data-animate>
+        <a href="#features" class="button"><i class="fas fa-search"></i> Explore Features</a>
+        <a href="#source" class="button"><i class="fas fa-download"></i> Get Started</a>
+      </nav>
+      <img src="./assets/image.png" alt="Homoxion interface" data-animate>
+    </div>
+  </header>
+
+  <section id="features" data-animate>
+    <h2>Key Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3><i class="fab fa-youtube"></i> YouTube Lookup</h3>
+        <p>Fetch video details, license status, and copyright information directly from YouTube's API</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fab fa-spotify"></i> Spotify Integration</h3>
+        <p>Retrieve track metadata, artist information, and release details from Spotify</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fas fa-file-audio"></i> File Analysis</h3>
+        <p>Inspect audio file metadata and tags using advanced Mutagen integration</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fas fa-robot"></i> AI Classification</h3>
+        <p>NLP-powered public domain detection and license term analysis</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fas fa-database"></i> Smart Caching</h3>
+        <p>Supabase-backed result storage for faster subsequent queries</p>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fas fa-search-plus"></i> Web Scraping</h3>
+        <p>Advanced license term discovery through Google CSE integration</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works" data-animate>
+    <h2>How It Works</h2>
+    <div class="step-list">
+      <div class="step-item">
+        <h3>Initialization</h3>
+        <p>Load API keys and connect to required services</p>
+      </div>
+      <div class="step-item">
+        <h3>Input Handling</h3>
+        <p>Accept YouTube URLs, Spotify links, or audio files</p>
+      </div>
+      <div class="step-item">
+        <h3>Data Collection</h3>
+        <p>Fetch metadata from APIs and analyze file tags</p>
+      </div>
+      <div class="step-item">
+        <h3>License Verification</h3>
+        <p>Cross-reference with databases and AI analysis</p>
+      </div>
+      <div class="step-item">
+        <h3>Result Delivery</h3>
+        <p>Return comprehensive copyright status report</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="integration" data-animate>
+    <h2>Integration</h2>
+    <pre><code>pip install httpx spotipy google-api-python-client mutagen supabase-py transformers
+# Required environment variables
+YOUTUBE_API_KEY
+SPOTIFY_CLIENT_ID
+SPOTIFY_CLIENT_SECRET
+GOOGLE_SEARCH_API_KEY
+GOOGLE_CSE_ID
+SUPABASE_URL
+SUPABASE_KEY
+</code></pre>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3><i class="fas fa-terminal"></i> CLI Usage</h3>
+        <pre><code>homoxion youtube --query "Never Gonna Give You Up"
+homonxion spotify --url [track_url]
+homonxion file --path song.mp3</code></pre>
+      </div>
+      <div class="feature-card">
+        <h3><i class="fas fa-code"></i> API Usage</h3>
+        <pre><code>from homoxion import YouTubeAnalyzer
+
+yt = YouTubeAnalyzer(api_key="YOUR_KEY")
+result = yt.analyze("https://youtu.be/dQw4w9WgXcQ")
+print(result.license_status)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="source" data-animate>
+    <h2>Open Source</h2>
+    <div class="feature-card">
+      <h3><i class="fab fa-github"></i> Contribute on GitHub</h3>
+      <p>MIT Licensed - Community Driven - Transparency Focused</p>
+      <a href="https://github.com/Renderdragonorg/homoxion-concept" class="button" target="_blank">
+        <i class="fas fa-star"></i> Star on GitHub
+      </a>
+    </div>
+  </section>
+
+  <footer data-animate>
+    <p>© 2025 Homoxion Engine · By CoderSoft · From Renderdragon.ORG</p>
+    <div style="margin-top: 1rem;">
+      <a href="https://discord.renderdragon.org" class="button"><i class="fab fa-discord"></i></a>
+      <a href="https://x.com/_renderdragon" class="button"><i class="fab fa-twitter"></i></a>
+      <a href="https://github.com/Renderdragonorg/homoxion-concept" class="button"><i class="fab fa-github"></i></a>
+    </div>
+  </footer>
+
+  <script>
+    // Dark Mode Toggle
+    const toggle = document.querySelector('.dark-mode');
+    const body = document.body;
+    const moonIcon = '<i class="fas fa-moon"></i>';
+    const sunIcon = '<i class="fas fa-sun"></i>';
+
+    function toggleDarkMode() {
+      body.classList.toggle('dark');
+      localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+      toggle.innerHTML = body.classList.contains('dark') ? sunIcon : moonIcon;
+    }
+
+    toggle.addEventListener('click', toggleDarkMode);
+
+    // Set initial theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      body.classList.add('dark');
+      toggle.innerHTML = sunIcon;
+    }
+
+    // Scroll Animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+   
